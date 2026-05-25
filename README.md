@@ -8,7 +8,7 @@ Deployable is an easy-to-deploy proxy site with over 900 games.
 
 ## Deploying
 
-Download the zip from the [Releases](https://github.com/Deployable/Deployable/releases) page, and upload `index.html` and `pingas.js` files.
+Download the zip from the [Releases](https://github.com/falling3_4/Deployable/releases) page, and upload `index.html` and `pingas.js` files.
 
 > [!WARNING]
 > If your service changes the names of files, you may need to upload the `.js` file first, then modify the service worker URL in index.ts
