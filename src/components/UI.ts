@@ -3,12 +3,11 @@ import { loadGames } from "../games/GamesManager";
 export function initUI(app: HTMLElement) {
   app.innerHTML = `
     <div id="main-nav">
-      <div class="nav-center">
+      <div class="nav-right">
+        <button class="small-btn" id="arrow" title="Expand/Hide">></button>
         <button id="nav-web" class="nav-item active">Web</button>
         <button id="nav-games" class="nav-item">Games</button>
-      </div>
-      <div class="nav-right">
-        <button id="settings-btn" title="Settings">&#9881;</button>
+        <button class="small-btn" id="settings-btn" title="Settings">&#9881;</button>
       </div>
     </div>
     <div id="view-stack">
