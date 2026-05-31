@@ -126,7 +126,7 @@ self.addEventListener("fetch", (event) => {
       event.respondWith(uv.fetch(event));
       return;
   }
-  if (url.pathname.startsWith("/scramjet/")) {
+  if (url.pathname.includes("/scramjet/")) { // scramjet fetches are now more flexible, aka if files are inside a folder and not on the root it will still work. this won't cause conflicts since scramjet urls are encoded
     event.respondWith(sjRequest(event));
     return;
   }
