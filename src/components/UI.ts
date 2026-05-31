@@ -1,4 +1,4 @@
-// import { loadGames } from "../games/GamesManager";
+import { loadGames } from "../games/GamesManager";
 
 export function initUI(app: HTMLElement) {
   app.innerHTML = `
@@ -97,7 +97,7 @@ export function initUI(app: HTMLElement) {
       gamesView.style.display = "flex";
       navWeb.classList.remove("active");
       navGames.classList.add("active");
-      // loadGames(gamesSearch.value);
+      loadGames(gamesSearch.value);
     }
   }
 

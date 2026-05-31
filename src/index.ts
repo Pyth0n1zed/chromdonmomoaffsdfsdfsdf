@@ -4,7 +4,7 @@ import { getWispServer, setWispServer } from "./app/utils";
 import { homeDataURL } from "./components/StartPage";
 import { initUI } from "./components/UI";
 import { createTab, getActiveTab, loadTab } from "./app/TabManager";
-// import { loadGames, getGamesState } from "./games/GamesManager";
+import { loadGames, getGamesState } from "./games/GamesManager";
 import { exportData, importData } from "./app/SettingsManager";
 import { openDB } from 'idb';
 
@@ -74,7 +74,7 @@ const app = document.getElementById("app");
 if (app) {
   initUI(app);
 
-  // await (window as any).Lumin.init({ headless: true });
+  await (window as any).Lumin.init({ headless: true });
 
   init()
     .then(() => {
@@ -158,23 +158,23 @@ if (app) {
       gamesSearch.oninput = () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-          // loadGames(gamesSearch.value);
+          loadGames(gamesSearch.value);
           return;
         }, 400);
       };
 
       prevPageBtn.onclick = () => {
-        // const { currentPage, selectedCategory } = getGamesState();
-        // if (currentPage > 1)
-          // loadGames(gamesSearch.value, selectedCategory, currentPage - 1);
-        return;
+        const { currentPage, selectedCategory } = getGamesState();
+        if (currentPage > 1)
+          loadGames(gamesSearch.value, selectedCategory, currentPage - 1);
+        // return;
       };
 
       nextPageBtn.onclick = () => {
-        // const { currentPage, totalPages, selectedCategory } = getGamesState();
-        // if (currentPage < totalPages)
-          // loadGames(gamesSearch.value, selectedCategory, currentPage + 1);
-        return;
+        const { currentPage, totalPages, selectedCategory } = getGamesState();
+        if (currentPage < totalPages)
+          loadGames(gamesSearch.value, selectedCategory, currentPage + 1);
+        // return;
       };
 
       const wispInput = document.getElementById(
