@@ -17,8 +17,12 @@ function openSettingsOverlay() {
   if (overlay) overlay.style.display = "flex";
 }
 
-function setDropdownOpenState(button: HTMLElement, open: boolean) {
-  button.classList.toggle("menu-open", open);
+function iconSvg(path: string, viewBox = "0 0 24 24") {
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      ${path}
+    </svg>
+  `;
 }
 
 export function initUI(app: HTMLElement) {
@@ -34,7 +38,6 @@ export function initUI(app: HTMLElement) {
         --cr-hover-bg: rgba(255, 255, 255, 0.08);
         --cr-active-bg: rgba(255, 255, 255, 0.12);
         --cr-border-radius-pill: 999px;
-        --cr-border-radius-tab: 10px 10px 0 0;
       }
 
       * { box-sizing: border-box; }
@@ -48,13 +51,9 @@ export function initUI(app: HTMLElement) {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
-      body {
-        user-select: none;
-      }
+      body { user-select: none; }
 
-      #view-stack,
-      #web-view,
-      #browser-root {
+      #view-stack, #web-view, #browser-root {
         width: 100%;
         height: 100%;
       }
@@ -74,10 +73,10 @@ export function initUI(app: HTMLElement) {
       }
 
       #tab-strip-container {
-        height: 40px;
+        height: 38px;
         display: flex;
         align-items: flex-end;
-        padding: 0 6px 0 6px;
+        padding: 0 6px;
         background: var(--cr-frame-bg);
         border-bottom: 1px solid rgba(255,255,255,0.04);
       }
@@ -101,48 +100,26 @@ export function initUI(app: HTMLElement) {
         gap: 8px;
         padding: 0 10px 0 12px;
         border: 0;
-        border-radius: var(--cr-border-radius-tab);
         background: transparent;
         color: var(--cr-text-secondary);
         position: relative;
         cursor: pointer;
         flex: 0 1 auto;
         transition:
-          background-color 140ms ease,
-          color 140ms ease,
-          transform 140ms ease,
-          width 140ms ease;
+          background-color 120ms ease,
+          color 120ms ease,
+          width 120ms ease,
+          transform 120ms ease;
       }
 
       .tab:hover {
-        background: var(--cr-hover-bg);
+        background: rgba(255,255,255,0.05);
       }
 
       .tab.active {
         background: var(--cr-toolbar-bg);
         color: var(--cr-text-primary);
         z-index: 3;
-        transform: translateY(0);
-      }
-
-      .tab.active::before,
-      .tab.active::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        width: 10px;
-        height: 10px;
-        pointer-events: none;
-      }
-
-      .tab.active::before {
-        left: -10px;
-        background: radial-gradient(circle at 0 0, transparent 10px, var(--cr-toolbar-bg) 10px);
-      }
-
-      .tab.active::after {
-        right: -10px;
-        background: radial-gradient(circle at 100% 0, transparent 10px, var(--cr-toolbar-bg) 10px);
       }
 
       .tab-enter {
@@ -155,11 +132,6 @@ export function initUI(app: HTMLElement) {
         height: 16px;
         object-fit: contain;
         flex: 0 0 auto;
-      }
-
-      .tab[data-loading="true"] .tab-favicon {
-        animation: spin 900ms linear infinite;
-        transform-origin: 50% 50%;
       }
 
       .tab-title {
@@ -177,15 +149,20 @@ export function initUI(app: HTMLElement) {
         height: 22px;
         margin-left: 2px;
         border: 0;
-        border-radius: 50%;
+        outline: none;
         background: transparent;
         color: inherit;
+        border-radius: 999px;
         font-size: 18px;
         line-height: 1;
         cursor: pointer;
         opacity: 0.85;
         flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: background-color 120ms ease, opacity 120ms ease;
+        appearance: none;
       }
 
       .tab-close:hover {
@@ -193,36 +170,35 @@ export function initUI(app: HTMLElement) {
         opacity: 1;
       }
 
-      #new-tab-btn {
+      #tab-finder-btn {
         width: 30px;
         height: 30px;
         border: 0;
-        border-radius: 50%;
+        outline: none;
+        appearance: none;
         background: transparent;
         color: var(--cr-text-primary);
-        font-size: 22px;
-        line-height: 1;
+        border-radius: 999px;
         margin-bottom: 2px;
         cursor: pointer;
         flex: 0 0 auto;
-        transition: background-color 120ms ease, transform 120ms ease;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: background-color 120ms ease, transform 120ms ease;
       }
 
-      #new-tab-btn:hover {
+      #tab-finder-btn:hover {
         background: var(--cr-hover-bg);
       }
 
-      #new-tab-btn:active {
+      #tab-finder-btn:active {
         transform: scale(0.96);
       }
 
-      #new-tab-btn svg {
+      #tab-finder-btn svg {
         width: 18px;
         height: 18px;
-        stroke: currentColor;
       }
 
       #topbar {
@@ -247,13 +223,15 @@ export function initUI(app: HTMLElement) {
         width: 30px;
         height: 30px;
         border: 0;
-        border-radius: 50%;
+        outline: none;
+        appearance: none;
+        border-radius: 999px;
         background: transparent;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 16px 16px;
         cursor: pointer;
         color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: background-color 120ms ease, transform 120ms ease, opacity 120ms ease;
       }
 
@@ -270,10 +248,12 @@ export function initUI(app: HTMLElement) {
         cursor: default;
       }
 
-      #back-btn { background-image: url(${ASSET_PATH}/icon_arrow_back.svg); }
-      #forward-btn { background-image: url(${ASSET_PATH}/icon_arrow_forward.svg); }
-      #reload-btn { background-image: url(${ASSET_PATH}/icon_refresh.svg); }
-      #menu-btn { background-image: url(${ASSET_PATH}/icon_more_vert.svg); }
+      .toolbar-btn svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        color: var(--cr-text-primary);
+      }
 
       .omnibox-shell {
         height: 32px;
@@ -302,8 +282,17 @@ export function initUI(app: HTMLElement) {
         width: 16px;
         height: 16px;
         flex: 0 0 auto;
-        background: url(${ASSET_PATH}/lock.svg) center / contain no-repeat;
+        background: none;
         opacity: 0.9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .omnibox-icon svg {
+        width: 16px;
+        height: 16px;
+        color: var(--cr-text-secondary);
       }
 
       #url-bar {
@@ -471,10 +460,6 @@ export function initUI(app: HTMLElement) {
         background: #aecbfa;
       }
 
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-
       @keyframes overlayFade {
         from { opacity: 0; }
         to { opacity: 1; }
@@ -498,29 +483,42 @@ export function initUI(app: HTMLElement) {
           <div id="chrome-ui-wrapper">
             <div id="tab-strip-container">
               <div id="tab-bar">
-                <button id="new-tab-btn" type="button" title="New tab" aria-label="New tab">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
+                <button id="tab-finder-btn" type="button" title="Search tabs" aria-label="Search tabs">
+                  ${iconSvg(`
+                    <circle cx="10" cy="10" r="5"></circle>
+                    <path d="M14 14l5 5"></path>
+                    <path d="M16 8h6"></path>
+                    <path d="M18 5h4"></path>
+                    <path d="M18 11h4"></path>
+                  `)}
                 </button>
               </div>
             </div>
 
             <div id="topbar">
               <div class="nav-group">
-                <button id="back-btn" class="toolbar-btn" type="button" title="Back" aria-label="Back"></button>
-                <button id="forward-btn" class="toolbar-btn" type="button" title="Forward" aria-label="Forward"></button>
-                <button id="reload-btn" class="toolbar-btn" type="button" title="Reload" aria-label="Reload"></button>
+                <button id="back-btn" class="toolbar-btn" type="button" title="Back" aria-label="Back">
+                  ${iconSvg(`<path d="M15 18l-6-6 6-6"></path>`)}
+                </button>
+                <button id="forward-btn" class="toolbar-btn" type="button" title="Forward" aria-label="Forward">
+                  ${iconSvg(`<path d="M9 18l6-6-6-6"></path>`)}
+                </button>
+                <button id="reload-btn" class="toolbar-btn" type="button" title="Reload" aria-label="Reload">
+                  ${iconSvg(`<path d="M20 11a8 8 0 1 0 2 5"></path><path d="M20 5v6h-6"></path>`)}
+                </button>
               </div>
 
               <div class="omnibox-shell">
-                <div class="omnibox-icon"></div>
+                <div class="omnibox-icon" aria-hidden="true">
+                  ${iconSvg(`<circle cx="12" cy="12" r="8"></circle><path d="M15 15l4 4"></path>`, "0 0 24 24")}
+                </div>
                 <input id="url-bar" type="text" placeholder="Search Google or type a URL" autocomplete="off" spellcheck="false" />
               </div>
 
               <div class="actions-group">
-                <button id="menu-btn" class="toolbar-btn" type="button" title="Settings and more" aria-label="Settings and more"></button>
+                <button id="menu-btn" class="toolbar-btn" type="button" title="Settings and more" aria-label="Settings and more">
+                  ${iconSvg(`<circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle>`)}
+                </button>
               </div>
             </div>
           </div>
@@ -571,7 +569,7 @@ export function initUI(app: HTMLElement) {
   `;
 
   const urlBar = document.getElementById("url-bar") as HTMLInputElement | null;
-  const newTabBtn = document.getElementById("new-tab-btn") as HTMLButtonElement | null;
+  const tabFinderBtn = document.getElementById("tab-finder-btn") as HTMLButtonElement | null;
   const backBtn = document.getElementById("back-btn") as HTMLButtonElement | null;
   const forwardBtn = document.getElementById("forward-btn") as HTMLButtonElement | null;
   const reloadBtn = document.getElementById("reload-btn") as HTMLButtonElement | null;
@@ -599,7 +597,7 @@ export function initUI(app: HTMLElement) {
     });
   }
 
-  newTabBtn?.addEventListener("click", () => fire("browser-new-tab"));
+  tabFinderBtn?.addEventListener("click", () => fire("browser-tab-finder"));
   backBtn?.addEventListener("click", () => fire("browser-back"));
   forwardBtn?.addEventListener("click", () => fire("browser-forward"));
   reloadBtn?.addEventListener("click", () => fire("browser-reload"));
@@ -681,7 +679,6 @@ export function initUI(app: HTMLElement) {
   });
 
   exportBtn?.addEventListener("click", () => exportData());
-
   importBtn?.addEventListener("click", () => importInput?.click());
 
   importInput?.addEventListener("change", () => {
@@ -698,12 +695,5 @@ export function initUI(app: HTMLElement) {
   choiceScram?.addEventListener("click", async () => {
     await setProxyMode("choice-scram");
     location.reload();
-  });
-
-  document.addEventListener("tab-state-changed", () => {
-    const back = document.getElementById("back-btn") as HTMLButtonElement | null;
-    const forward = document.getElementById("forward-btn") as HTMLButtonElement | null;
-    if (back) back.disabled = false;
-    if (forward) forward.disabled = false;
   });
 }
