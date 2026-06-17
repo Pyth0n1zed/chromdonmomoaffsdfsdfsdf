@@ -6,4 +6,7 @@ export interface Tab {
   frame: HTMLIFrameElement;
   tabElement: HTMLElement;
   sjFrame: any;
+  title?: string;
+  favicon?: string;
+  loading?: boolean;
 }
