@@ -121,7 +121,10 @@ export async function createTab(url: string = homeDataURL) {
       }
     } catch (err) {
       // Cross-origin failure or timeout hooks can be logged here
-      triggerErrorPage(tab, "Failed to resolve connection.");
+      // Only show error page if we were trying to load a non-home page
+      if (tab.url !== homeDataURL && !tab.url.includes("data:text/html")) {
+        triggerErrorPage(tab, "Failed to resolve connection.");
+      }
     }
   });
 
@@ -221,6 +224,7 @@ export function loadTab(
   
   if (isHome) {
     if (activeTab === tab) urlBar.value = "";
+    setTabLoadingState(tab, false); // Clear loading state for home page
     tab.frame.src = homeDataURL;
   } else {
     if (activeTab === tab) urlBar.value = url;
